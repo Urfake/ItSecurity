@@ -1,32 +1,62 @@
-alfavit_EU =  'ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ'
-alfavit_RU = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ'
-alfavit_KG = 'АБВГДЕЁЖЗИЙКЛМНҢОӨПРСТУҮФХЦЧШЩЬЪЫЭЮЯАБВГДЕЁЖЗИЙКЛМНҢОӨПРСТУҮФХЦЧШЩЬЪЫЭЮЯ'
-smeshenie = int(input('Шаг шифровки: '))
-message = input("Сообщение для ДЕшифровки: ").upper()
-itog = ''
-lang = input('Выберите язык RU/EU: ')
-if lang == 'RU':
-    for i in message:
-        mesto = alfavit_RU.find(i)
-        new_mesto = mesto + smeshenie
-        if i in alfavit_RU:
-            itog += alfavit_RU[new_mesto]
+import tkinter as tk
+
+kyrgyz_alphabet = "абвгдеёжзийклмнопрстуүфхцчшъыьэюя"
+
+def caesar_cipher(text, shift):
+    result = ""
+    for char in text:
+        if char.isalpha():
+            if char.isupper():
+                index = (kyrgyz_alphabet.find(char.lower()) + shift) % len(kyrgyz_alphabet)
+                result += kyrgyz_alphabet[index].upper()
+            else:
+                index = (kyrgyz_alphabet.find(char) + shift) % len(kyrgyz_alphabet)
+                result += kyrgyz_alphabet[index]
         else:
-            itog += i
-if lang == 'EU':
-    for i in message:
-        mesto = alfavit_EU.find(i)
-        new_mesto = mesto + smeshenie
-        if i in alfavit_EU:
-            itog += alfavit_EU[new_mesto]
-        else:
-            itog += i
-if lang == 'KG':
-    for i in message:
-        mesto = alfavit_KG.find(i)
-        new_mesto = mesto + smeshenie
-        if i in alfavit_KG:
-            itog += alfavit_KG[new_mesto]
-        else:
-            itog += i
-print (itog)
+            result += char
+    return result
+
+def encrypt():
+    text = text_entry.get("1.0", "end-1c")
+    shift = int(shift_entry.get())
+    encrypted_text = caesar_cipher(text, shift)
+    result_text.delete("1.0", "end")
+    result_text.insert("1.0", encrypted_text)
+
+def decrypt():
+    text = text_entry.get("1.0", "end-1c")
+    shift = int(shift_entry.get())
+    decrypted_text = caesar_cipher(text, -shift)
+    result_text.delete("1.0", "end")
+    result_text.insert("1.0", decrypted_text)
+
+# Create the Tkinter window
+window = tk.Tk()
+window.title("Caesar Cipher for Kyrgyz Alphabet")
+
+# Create labels and entries
+text_label = tk.Label(window, text="Enter the text:")
+text_label.pack()
+text_entry = tk.Text(window, height=10, width=50)
+text_entry.pack()
+
+shift_label = tk.Label(window, text="Enter the shift value:")
+shift_label.pack()
+shift_entry = tk.Entry(window)
+shift_entry.pack()
+
+# Create buttons
+encrypt_button = tk.Button(window, text="Encrypt", command=encrypt)
+encrypt_button.pack()
+
+decrypt_button = tk.Button(window, text="Decrypt", command=decrypt)
+decrypt_button.pack()
+
+# Create result text area
+result_label = tk.Label(window, text="Result:")
+result_label.pack()
+result_text = tk.Text(window, height=10, width=50)
+result_text.pack()
+
+# Start the Tkinter event loop
+window.mainloop()
